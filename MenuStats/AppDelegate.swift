@@ -7,20 +7,43 @@
 
 import Cocoa
 
-@main
 class AppDelegate: NSObject, NSApplicationDelegate {
 
-    
-
+    var statusItem: NSStatusItem!
+    var timer: Timer?
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        // Insert code here to initialize your application
+        print("--- ПРИЛОЖЕНИЕ ЗАПУСТИЛОСЬ ---")
+        
+        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+
+        if let button = statusItem.button {
+            button.title = "ТЕСТ"
+            print("--- КНОПКА СОЗДАНА ---")
+            button.action = #selector(quitApp)
+            button.target = self
+        }
+
+        updateStats()
+        
+        timer = Timer.scheduledTimer(timeInterval: 2.0,
+                                     target: self,
+                                     selector: #selector(updateStats),
+                                     userInfo: nil,
+                                     repeats: true)
     }
 
-    func applicationWillTerminate(_ aNotification: Notification) {
-        // Insert code here to tear down your application
+    @objc func updateStats() {
+        let mem = memoryUsagePercent()
+        let disk = freeDiskSpace()
+        statusItem.button?.title = "\(mem)% | \(disk)"
     }
 
+    @objc func quitApp() {
+        NSApp.terminate(nil)
+    }
 
+    func applicationWillTerminate(_ notification: Notification) {
+        timer?.invalidate()
+    }
 }
-
