@@ -20,8 +20,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if let button = statusItem.button {
             button.title = "ТЕСТ"
             print("--- КНОПКА СОЗДАНА ---")
-            button.action = #selector(quitApp)
-            button.target = self
+            let menu = NSMenu()
+            menu.addItem(NSMenuItem(title: "Выход", action: #selector(quitApp), keyEquivalent: "q"))
+            statusItem.menu = menu
         }
 
         updateStats()
